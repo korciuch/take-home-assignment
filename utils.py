@@ -2,7 +2,6 @@
 
 import string
 import numpy as np
-from constants import MIN_WORD_LENGTH
 
 class Shape:
     def __init__(self, num_rows: int, num_columns: int):
@@ -15,6 +14,8 @@ class Coordinate:
         self.pair = tuple((row_component, column_component))
         self.r  = row_component
         self.c = column_component
+    def __str__(self):
+        return "Coordinate: ({},{})".format(self.r,self.c)
 
 class Board:
     LETTERS = list(string.ascii_lowercase)
@@ -43,6 +44,8 @@ class Board:
         self.visited[coord.r][coord.c] = False
 
 class Lexicon:
+    MIN_WORD_LENGTH = 3
+
     def __init__(self, infile: str):
         self.words = set()
         self.populate_dictionary(infile)
@@ -51,5 +54,9 @@ class Lexicon:
         with open(infile) as f:
             for l in f:
                 word = l.split('\n')[0]
-                if len(word) >= MIN_WORD_LENGTH:
+                if len(word) >= self.MIN_WORD_LENGTH:
                     self.words.add(word.lower())
+
+    def is_prefix(self, s: str) -> bool:
+        search = filter(lambda x: x.startswith(s), list(self.words))
+        return len(list(search)) > 0
